@@ -52,6 +52,11 @@ public:
         }
     }
 
+     void retrieveUntil(const char *end)
+    {
+        retrieve(end - peek());
+    }
+
     void retrieveAll()
     {
         readerIndex_ = kCheapPrepend;
@@ -80,6 +85,19 @@ public:
         {
             makeSpace(len);   // 扩容函数
         }
+    }
+
+    void append(const std::string &str)
+    {
+        append(str.data(), str.size());
+    }
+
+    // 在读位置和写位置之间的数据中查找 \r\n 换行，找到的话返回这个指针，没找到返回NULL
+    const char* findCRLF() const
+    {
+        // FIXME: replace with memmem()?
+        const char* crlf = std::search(peek(), beginWrite(), kCRLF, kCRLF+2);
+        return crlf == beginWrite() ? NULL : crlf;
     }
 
     // 将[data, data + len]内存中的数据添加到writable缓冲区当中
@@ -121,4 +139,6 @@ private:
     std::vector<char> buffer_;
     size_t readerIndex_;
     size_t writerIndex_;
+
+    static const char kCRLF[];  // 存储 \r\n
 };

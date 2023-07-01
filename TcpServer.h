@@ -43,6 +43,12 @@ public:
     // 开启服务器监听
     void start();
 
+    EventLoop* getLoop() const { return loop_; }
+
+    const std::string name() { return name_; }
+
+    const std::string ipPort() { return ipPort_; }
+
 private:
     /**
      * 根据轮询算法选择一个subloop并将其唤醒
